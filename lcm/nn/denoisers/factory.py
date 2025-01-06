@@ -3,7 +3,7 @@
 #
 #
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Literal, Optional
 
 from fairseq2.logging import get_log_writer
@@ -36,10 +36,10 @@ class DenoiserConfig(TransformerConfig):
     pos_embedding_style: Literal["rope", "sine", "learned", "none"] = "none"
     """By default, a denoiser does not have a positional embedder"""
 
-    pre_denoiser: ProjectionConfig = ProjectionConfig()
+    pre_denoiser: ProjectionConfig = field(default_factory=lambda: ProjectionConfig())
     """the initial projection at the top of the denoiser"""
 
-    post_denoiser: ProjectionConfig = ProjectionConfig()
+    post_denoiser: ProjectionConfig = field(default_factory=lambda: ProjectionConfig())
     """the final output projection at the end of the denoiser"""
 
     timestep_embed_dim: int = 1024

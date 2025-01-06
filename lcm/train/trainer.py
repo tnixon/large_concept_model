@@ -128,14 +128,16 @@ class TrainingConfig:
     wandb_run_name: Optional[str] = None
     wandb_entity: Optional[str] = None
 
-    requirements: Requirements = Requirements(
-        nodes=1,
-        tasks_per_node=8,
-        gpus_per_node=8,
-        cpus_per_task=8,
-        mem_gb=256,
-        timeout_min=3 * 24 * 60,
-        constraint="volta32gb",
+    requirements: Requirements = field(
+        default_factory=lambda: Requirements(
+            nodes=1,
+            tasks_per_node=8,
+            gpus_per_node=8,
+            cpus_per_task=8,
+            mem_gb=256,
+            timeout_min=3 * 24 * 60,
+            constraint="volta32gb",
+        )
     )
     """The scheduling requirements for this trainer"""
 

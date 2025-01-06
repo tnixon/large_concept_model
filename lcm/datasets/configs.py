@@ -27,12 +27,12 @@ class ParquetBatchFormat(Enum):
 
 
 class ColumnsNames(Enum):
-    source_column: str = "_source_column"
-    source_text_column: str = "_source_text_column"
-    target_column: str = "_target_column"
-    target_text_column: str = "_target_text_column"
+    source_column = "_source_column"
+    source_text_column = "_source_text_column"
+    target_column = "_target_column"
+    target_text_column = "_target_text_column"
 
-    dataset_name: str = "_dataset_name"
+    dataset_name = "_dataset_name"
 
 
 @dataclass

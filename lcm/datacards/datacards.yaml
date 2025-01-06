@@ -1,8 +1,7 @@
 # FIXME
 name: "pretraining_data"
 parquet_path:
-  #s3: "s3://dl.fbaipublicfiles.com/LCM/rocstories"
-  s3: "/large_experiments/lcm/data/sonarized/rocstories"
+  s3: "wiki_data"
 source_column: "text_sentences_sonar_emb"
 source_text_column: "text_sentences"
 # partition columns:
@@ -11,7 +10,7 @@ source_text_column: "text_sentences"
 # FIXME
 name: "finetuning_data"
 parquet_path:
-  s3: "/large_experiments/lcm/data/sonarized/cosmopedia_sample"
+  s3: "cosmopedia_sample"
 source_column: prompt_sentences_sonar_emb
 source_text_column: prompt_sentences
 target_column: text_sentences_sonar_emb

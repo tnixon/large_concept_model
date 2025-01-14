@@ -6,7 +6,6 @@
 from dataclasses import dataclass
 
 from lcm.evaluation.api import (
-    GROUND_TRUTH_COLUMN,
     PREDICTION_COLUMN,
     Example,
 )

@@ -78,9 +78,9 @@ class CliConfig:
 
     def __post_init__(self) -> None:
         self.metric_log_dir = self.metric_log_dir or self.dump_dir
-        assert (
-            self.temperature >= 0.0
-        ), f"Expect non-zero temperature, get {self.temperature}"
+        assert self.temperature >= 0.0, (
+            f"Expect non-zero temperature, get {self.temperature}"
+        )
         if self.temperature == 0:
             self.top_p = 0
             self.top_k = 0

@@ -66,9 +66,9 @@ def test_dynamic_prompt(tmp_path, simple_json_dataset, monkeypatch):
             )
         )
         for prompt, result in zip(default_prompts, results):
-            assert (
-                result["text_prompts"] == prompt
-            ), f"Not match: {result['text_prompts']} != {prompt}"
+            assert result["text_prompts"] == prompt, (
+                f"Not match: {result['text_prompts']} != {prompt}"
+            )
     # Custom prompt with prefix and suffix
     with monkeypatch.context() as m2:
         m2.setattr(
@@ -100,9 +100,9 @@ def test_dynamic_prompt(tmp_path, simple_json_dataset, monkeypatch):
             )
         )
         for prompt, result in zip(custom_prompts, results):
-            assert (
-                result["text_prompts"] == prompt
-            ), f"Not match: {result['text_prompts']} != {prompt}"
+            assert result["text_prompts"] == prompt, (
+                f"Not match: {result['text_prompts']} != {prompt}"
+            )
 
     # Custom prompt with complex sequences of text
     with monkeypatch.context() as m3:
@@ -141,6 +141,6 @@ def test_dynamic_prompt(tmp_path, simple_json_dataset, monkeypatch):
             )
         )
         for prompt, result in zip(custom_prompts, results):
-            assert (
-                result["text_prompts"] == prompt
-            ), f"Not match: {result['text_prompts']} != {prompt}"
+            assert result["text_prompts"] == prompt, (
+                f"Not match: {result['text_prompts']} != {prompt}"
+            )

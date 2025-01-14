@@ -182,13 +182,13 @@ class LCMDenoiser(Module):
         """
 
         emb_timesteps = self.embed_time(diffusion_timesteps)
-        assert (
-            conditioning_variables is not None
-        ), "Expected conditioning_variables, found None"
+        assert conditioning_variables is not None, (
+            "Expected conditioning_variables, found None"
+        )
 
-        assert (
-            conditioning_variables is not None
-        ), "Mypy - Expecting non-None conditioning_variables"
+        assert conditioning_variables is not None, (
+            "Mypy - Expecting non-None conditioning_variables"
+        )
 
         conditioning_variables = torch.cat(
             [
@@ -438,9 +438,9 @@ class LCMDenoiserLayer(TransformerDecoderLayer):
     ) -> Tensor:
         residual = seqs
 
-        assert (
-            self.norm_order != TransformerNormOrder.POST
-        ), "DiT AdaLN expect pre-normalization"
+        assert self.norm_order != TransformerNormOrder.POST, (
+            "DiT AdaLN expect pre-normalization"
+        )
 
         if self.norm_order != TransformerNormOrder.POST:
             seqs = self.self_attn_layer_norm(seqs)
@@ -489,9 +489,9 @@ class LCMDenoiserLayer(TransformerDecoderLayer):
 
         residual = seqs
 
-        assert (
-            self.norm_order != TransformerNormOrder.POST
-        ), "DiT AdaLN expect pre-normalization"
+        assert self.norm_order != TransformerNormOrder.POST, (
+            "DiT AdaLN expect pre-normalization"
+        )
 
         if self.norm_order != TransformerNormOrder.POST:
             seqs = cast(LayerNorm, self.cross_attention_layer_norm)(seqs)
@@ -521,9 +521,9 @@ class LCMDenoiserLayer(TransformerDecoderLayer):
         return seqs
 
     def _forward_ffn(self, seqs: Tensor, modulators: Tensor) -> Tensor:
-        assert (
-            self.norm_order != TransformerNormOrder.POST
-        ), "DiT AdaLN expects pre-normalization"
+        assert self.norm_order != TransformerNormOrder.POST, (
+            "DiT AdaLN expects pre-normalization"
+        )
         residual = seqs
 
         if self.norm_order != TransformerNormOrder.POST:

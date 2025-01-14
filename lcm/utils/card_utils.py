@@ -147,9 +147,9 @@ def create_model_card_from_training_folder(
     model_config = training_config.model_config_or_name
 
     cp_fn = checkpoint_manager._checkpoint_dir / f"step_{step_nr}" / "model.pt"
-    assert (
-        cp_fn
-    ), f"Checkpoint manager could not extract checkpoint path for step {step_nr}."
+    assert cp_fn, (
+        f"Checkpoint manager could not extract checkpoint path for step {step_nr}."
+    )
     # TODO: deal with the fine-tuning case, where model_config is a string
     if isinstance(model_config, str):
         parent_card = default_asset_store.retrieve_card(model_config)

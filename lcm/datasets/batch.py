@@ -249,9 +249,9 @@ class LCMInput(Batched):
 
         length = len(self.source)
 
-        assert (
-            (self.target is None) or (len(self.target) == length)
-        ), f"all elements in LCMInput should be of the same length, got {len(self.target)} and {length}"
+        assert (self.target is None) or (len(self.target) == length), (
+            f"all elements in LCMInput should be of the same length, got {len(self.target)} and {length}"
+        )
 
     def __len__(self) -> int:
         return len(self.source)
@@ -296,9 +296,9 @@ class LCMInput(Batched):
             )
 
         elif style == LCMStyle.SUPERVISED:
-            assert (
-                self.target is not None
-            ), "Missing target embeddings for a supervised batch"
+            assert self.target is not None, (
+                "Missing target embeddings for a supervised batch"
+            )
             return get_embeddings_sequence(
                 src_seqs=self.source,
                 tgt_seqs=self.target,

@@ -175,9 +175,9 @@ class TransformerFactory:
         )
         # reset residual_scale
         if layer.residual_scale is not None:
-            assert (
-                self.config.scale_residual is not None
-            ), f"Layer has a resiudal scale but scale={self.config.scale_residual}"
+            assert self.config.scale_residual is not None, (
+                f"Layer has a resiudal scale but scale={self.config.scale_residual}"
+            )
             torch.nn.init.constant_(layer.residual_scale, self.config.scale_residual)
             logger.info(
                 f"Initializing the residual scale at {self.config.scale_residual}"

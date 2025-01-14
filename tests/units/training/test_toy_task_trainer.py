@@ -100,9 +100,9 @@ def test_toy_mse_training(tmp_path, simple_train_dataset, simple_validation_data
         ), f"{param_name} differs in checkpoint!"
 
     # Testing that the model card has been created
-    assert (
-        train_dirname / "model_card.yaml"
-    ).exists(), f"The file {train_dirname}/model_card.yaml does not exist"
+    assert (train_dirname / "model_card.yaml").exists(), (
+        f"The file {train_dirname}/model_card.yaml does not exist"
+    )
 
     # Testing that the model card can be used to load the model correctly
     card = trainer.create_model_card_for_last_checkpoint()

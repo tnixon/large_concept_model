@@ -90,9 +90,9 @@ class LCMGenerator:
         self.max_seq_len = options.max_seq_len
         self.min_seq_len = options.min_seq_len
 
-        assert (
-            self.min_seq_len >= 1
-        ), f"min_seq_len must be greater than or equal to 1, min_seq_len={options.min_seq_len}"
+        assert self.min_seq_len >= 1, (
+            f"min_seq_len must be greater than or equal to 1, min_seq_len={options.min_seq_len}"
+        )
 
         self.eos_threshold = options.eos_threshold
 
@@ -145,9 +145,9 @@ class LCMGenerator:
             self.prompt_seq_lens = None
         else:
             self.prompt_seq_lens = prompt_padding_mask.seq_lens
-            assert (
-                self.prompt_seq_lens is not None
-            ), "Expecting a valid `self.prompt_seq_lens` Tensor, found `None`"
+            assert self.prompt_seq_lens is not None, (
+                "Expecting a valid `self.prompt_seq_lens` Tensor, found `None`"
+            )
             self.min_prompt_len = int(torch.min(self.prompt_seq_lens, dim=0)[0].item())
 
             # Keep the materialized mask
@@ -158,17 +158,17 @@ class LCMGenerator:
 
         # Make sure we do not accidentally set a max_gen_len that exceeds
         # the generator's model capability
-        assert (
-            max_gen_len <= self.max_seq_len
-        ), f"Generator can generate up to {self.max_seq_len} sequences, max_gen_len={max_gen_len}"
+        assert max_gen_len <= self.max_seq_len, (
+            f"Generator can generate up to {self.max_seq_len} sequences, max_gen_len={max_gen_len}"
+        )
         self.max_gen_len = max_gen_len
 
         if not min_gen_len:
             min_gen_len = self.min_seq_len
 
-        assert (
-            min_gen_len > 0
-        ), f"min_gen_len must be greater than or equal to 1, min_gen_len={min_gen_len}"
+        assert min_gen_len > 0, (
+            f"min_gen_len must be greater than or equal to 1, min_gen_len={min_gen_len}"
+        )
         self.min_gen_len = min_gen_len
 
         if temperature == 0.0:
@@ -303,9 +303,9 @@ class LCMGenerator:
         # Ignore prompt positions between min-max prompt_len
         must_keep_going = None
         if self.step_nr < self.max_prompt_len:
-            assert (
-                self.prompt_padding_mask is not None
-            ), f"If self.prompt_padding_mas is None, then self.step_nr should start from self.max_prompt_len={self.max_prompt_len} - currently self.step_nr = {self.step_nr}"
+            assert self.prompt_padding_mask is not None, (
+                f"If self.prompt_padding_mas is None, then self.step_nr should start from self.max_prompt_len={self.max_prompt_len} - currently self.step_nr = {self.step_nr}"
+            )
             mask = self.prompt_padding_mask[:, self.step_nr]
             model_last_output[mask] = self.seqs[mask, self.step_nr]
             must_keep_going = mask

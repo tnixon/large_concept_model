@@ -68,9 +68,9 @@ class TranslatedRougeScorer(Scorer):
     ) -> List[str]:
         src_lang, tgt_lang = self.src_lang, self.tgt_lang
         sent_translations = []
-        assert isinstance(
-            self.model, EncoderDecoderModel
-        ), f"Unsupported type: {type(self.model)}"
+        assert isinstance(self.model, EncoderDecoderModel), (
+            f"Unsupported type: {type(self.model)}"
+        )
         generator = BeamSearchSeq2SeqGenerator(
             self.model, echo_prompt=True, max_seq_len=self.max_seq_len
         )

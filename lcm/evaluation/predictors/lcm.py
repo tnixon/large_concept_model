@@ -209,9 +209,9 @@ class LCMPredictor:
         if max_gen_len is None:
             max_gen_len = self.config.max_seq_len
 
-        assert isinstance(
-            prompts, Batched
-        ), f"Expect sequence of prompts, get {type(prompts)}"
+        assert isinstance(prompts, Batched), (
+            f"Expect sequence of prompts, get {type(prompts)}"
+        )
 
         # Extract the input embeddings
         seqs: List[torch.Tensor] = []
@@ -226,9 +226,9 @@ class LCMPredictor:
                 )
                 seqs.append(prompt_embs)
         else:
-            assert (
-                isinstance(prompts, list) and isinstance(prompts[0], torch.Tensor)
-            ), f"Expect sonarized prompts in the form or List[torch.Tensor], get {type(prompts)}"
+            assert isinstance(prompts, list) and isinstance(prompts[0], torch.Tensor), (
+                f"Expect sonarized prompts in the form or List[torch.Tensor], get {type(prompts)}"
+            )
             seqs = prompts
 
         if max_prompt_len:

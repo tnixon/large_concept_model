@@ -8,4 +8,4 @@ runs:
     - name: "Install libsndfile"
       shell: bash
       run: |
-        sudo apt-get install libsndfile1 setuptools
+        sudo apt-get install libsndfile1

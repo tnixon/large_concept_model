@@ -21,7 +21,7 @@ Next, we download and parse the content (source text and summaries), saving diff
 ```shell
 python prepare_evaluation_data.py prepare_data \
     --dataset_name=cnn_dailymail \
-    --output_dir=jsonl_dataset/cnn_dailymail \
+    --output_dir=jsonl_dataset \
     --source_text_column=article \
     --target_text_column=highlights \
     --version=3.0.0 \
@@ -41,6 +41,8 @@ To perform sentence splitting and sonar embedding for each split, run the follow
 ```shell
 python prepare_evaluation_data.py embed \
     --input_path=jsonl_dataset/cnn_dailymail/test.jsonl \
+    --input_column=article \
+    --output_column=highlights \
     --output_dir=parquet_dataset/cnn_dailymail \
     --lang=eng_Latn \
     --mode=slurm \
@@ -96,6 +98,8 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
 ```
 
 In the example above, we load the model "meta-llama/Llama-3.1-8B-Instruct" as [specified](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) in HuggingFace, evaluate it on the CNN dailymail in which we process using the `prepare_evaluation_data.py` script as in Step 1.1, and store the results in the folder specified via `dump_dir`. The argument `dataset_dir` refers to the value of the argument `output_dir` in Step 1.1.
+
+In some cases, the model requires authentication token to evaluate. You can obtain them in HuggingGface (see [User Access Tokens](https://huggingface.co/docs/hub/en/security-tokens)), then add the parameter `--use_auth_token [YOUR TOKEN]` to the CLI command.
 
 You can also customize the prompt used to evaluate the LLM for each evaluation run. To do this, instead of specifying the `prompt_prefix` and `prompt_suffix` when preparing the data (as shown in the example in Section 1.1), we specify `dataset.source_prefix_text` and `dataset.source_suffix_text` during the evaluation run:
 

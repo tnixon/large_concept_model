@@ -59,7 +59,7 @@ def get_task_config_llm(
 
     # Add original columns for judge tasks
     dataset.columns = [dataset.source_text_column, dataset.target_text_column]
-    postprocess_fn = partial(default_text_postprocess, source_text_column=source_text_column)  # fmt: skip
+    postprocess_fn = partial(default_text_postprocess, source_text_column=dataset.source_text_column)  # fmt: skip
 
     return GenerationTaskConfig(
         dataset=dataset,

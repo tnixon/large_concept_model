@@ -613,8 +613,6 @@ def default_text_postprocess(
 
     if ColumnsNames.target_text_column.value in x:
         res["targets"] = [x[ColumnsNames.target_text_column.value]]
-    
-    breakpoint()
 
     if source_text_column in x:
         res["source"] = x[source_text_column]

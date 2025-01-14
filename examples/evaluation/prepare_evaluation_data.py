@@ -159,8 +159,17 @@ def prepare_data(
 ):
     """Download HuggingFace datasets and parse them into JSON format"""
     ds = datasets.load_dataset(dataset_name, version)
+
     prompt_prefix = prompt_prefix or ""
     prompt_suffix = prompt_suffix or ""
+    
+    # If there is no prompt added to the dataset, we keep the original column names
+    if not prompt_prefix and not prompt_suffix:
+        source = source_text_column
+        target = target_text_column
+    else:
+        source = INPUT_KEY
+        target = OUTPUT_KEY
 
     for split in SPLITS:
         with open(
@@ -169,12 +178,12 @@ def prepare_data(
             for item in ds[split]:
                 prompt = prompt_prefix + item[source_text_column] + prompt_suffix
                 output_item = {
-                    source_text_column: prompt,
+                    source: prompt,
                     "split": split,
                     "category": f"{dataset_name}",
                 }
                 if target_text_column is not None:
-                    output_item[target_text_column] = item[target_text_column]
+                    output_item[target] = item[target_text_column]
                 o.write(json.dumps(output_item) + "\n")
 
 

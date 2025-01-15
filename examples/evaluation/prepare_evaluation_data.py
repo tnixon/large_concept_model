@@ -56,9 +56,8 @@ class SonarColumnRenameAndEmbedConfig(SonarTextEmbedderConfig):
 
 
 class InstSonarEmbedder(SonarTextBatchEmbedder):
-    
     config: SonarColumnRenameAndEmbedConfig
-    
+
     def __init__(self, config: SonarColumnRenameAndEmbedConfig) -> None:
         super().__init__(config)
         self.sat_splitter = SaT("sat-3l")
@@ -130,12 +129,14 @@ class InstSonarEmbedder(SonarTextBatchEmbedder):
     def __call__(self, batch: pa.Table) -> pa.Table:
         batch = batch_to_pandas(batch)
 
-        batch[f"{INPUT_KEY}_sentences"] = self.split_one_single_column(batch[self.config.input_column])
+        batch[f"{INPUT_KEY}_sentences"] = self.split_one_single_column(
+            batch[self.config.input_column]
+        )
         batch[f"{INPUT_KEY}_sentences"] = self.resplit_long_sentences(
             batch[f"{INPUT_KEY}_sentences"],
             max_length_char=256,
         )
-        
+
         if self.config.output_column is not None:
             batch[f"{OUTPUT_KEY}_sentences"] = self.split_one_single_column(
                 batch[self.config.output_column]
@@ -162,7 +163,7 @@ def prepare_data(
 
     prompt_prefix = prompt_prefix or ""
     prompt_suffix = prompt_suffix or ""
-    
+
     # If there is no prompt added to the dataset, we keep the original column names
     if not prompt_prefix and not prompt_suffix:
         source = source_text_column

@@ -150,7 +150,9 @@ def _add_affix(
     if column in inp.keys():
         inp[column] = str(prefix or "") + to_str(inp[column]) + str(suffix or "")
     else:
-        assert orig_column in inp, f"Missing {column} or {orig_column} (Found columns: {inp.keys()})"
+        assert orig_column in inp, (
+            f"Missing {column} or {orig_column} (Found columns: {inp.keys()})"
+        )
         inp[column] = str(prefix or "") + to_str(inp[orig_column]) + str(suffix or "")
     return inp
 

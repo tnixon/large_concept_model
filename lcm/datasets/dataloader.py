@@ -195,9 +195,9 @@ class LCMDataLoader(DataLoader[LCMInput, ParquetDatasetConfig], Stateful):
             else:
                 embs = None
             outputs[key] = embs
-        assert (
-            outputs["source"] is not None
-        ), "LCMDataLoader requires `source` sequences to be present in batches"
+        assert outputs["source"] is not None, (
+            "LCMDataLoader requires `source` sequences to be present in batches"
+        )
         return LCMInput(**outputs)
 
     def iterate_batches(self) -> Iterator[LCMInput]:

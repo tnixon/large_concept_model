@@ -53,9 +53,9 @@ class DataLoader(ABC, Generic[BatchT_co, DatasetConfigT]):
             self._pipeline = self.builder_func(
                 self.datasets, self.data_config, gang_rank, world_size
             )
-        assert (
-            self._pipeline
-        ), f"Cannot build data pipeline from config {self.data_config}"
+        assert self._pipeline, (
+            f"Cannot build data pipeline from config {self.data_config}"
+        )
         return self._pipeline
 
     def destroy(self) -> None:

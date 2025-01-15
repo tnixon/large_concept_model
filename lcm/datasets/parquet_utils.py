@@ -486,9 +486,9 @@ def build_batching_loop_over_one_table(
     num_parallel_calls: int = 1,
 ) -> DataPipeline:
     if max_tokens is not None:
-        assert (
-            length_column is not None
-        ), "Need to provide a column to compute the number of tokens"
+        assert length_column is not None, (
+            "Need to provide a column to compute the number of tokens"
+        )
 
     random_state = np.random.RandomState(seed)
     if length_column is not None and len(length_column) > 0:
@@ -1109,9 +1109,9 @@ def get_row_group_level_metadata(
     columns_to_exclude = set(["row_group_id", "num_rows", "total_byte_size"]) & set(
         columns
     )
-    assert (
-        len(columns_to_exclude) == 0
-    ), f"names conflict, rename/remove : {columns_to_exclude}"
+    assert len(columns_to_exclude) == 0, (
+        f"names conflict, rename/remove : {columns_to_exclude}"
+    )
 
     def get_one_row_group_stats(row_group):
         metadata = row_group.metadata

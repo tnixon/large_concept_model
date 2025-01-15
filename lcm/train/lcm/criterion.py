@@ -66,9 +66,9 @@ def compute_standard_mse(
         )
 
     if normalizer is not None:
-        assert hasattr(
-            normalizer, "denormalize"
-        ), "The provided normalizer has not method `denormalize`"
+        assert hasattr(normalizer, "denormalize"), (
+            "The provided normalizer has not method `denormalize`"
+        )
         flattened_predictions = normalizer.denormalize(flattened_predictions)
         flattened_target = normalizer.denormalize(flattened_target)
 

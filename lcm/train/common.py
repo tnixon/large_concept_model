@@ -33,9 +33,9 @@ def _parse_training_config(train_config: DictConfig):
     try:
         trainer_obj = hydra.utils.get_object(trainer_cls_or_func)
         sign = signature(trainer_obj)
-        assert (
-            len(sign.parameters) == 1 and "config" in sign.parameters
-        ), f'{trainer_cls_or_func} should take a single argument called "config"'
+        assert len(sign.parameters) == 1 and "config" in sign.parameters, (
+            f'{trainer_cls_or_func} should take a single argument called "config"'
+        )
         param_type = sign.parameters["config"].annotation
 
         OmegaConf.resolve(train_config)

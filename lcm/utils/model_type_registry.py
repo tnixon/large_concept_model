@@ -39,9 +39,9 @@ class ModelTypeRegistry:
             The factory to construct model configurations.
         """
         model_type = model_type_config.model_type
-        assert (
-            model_type
-        ), "To register a model type, the model_type parameter should be non-empty."
+        assert model_type, (
+            "To register a model type, the model_type parameter should be non-empty."
+        )
         if model_type in self._configs:
             raise ValueError(
                 f"`model_type` must be a unique model type name, but '{model_type}' is already registered."

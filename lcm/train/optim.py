@@ -29,16 +29,15 @@ def build_lr_scheduler(
     stage_ratio: Tuple[float, ...] = (0.1, 0.4, 0.5),
     schedule: str = "myle",
 ) -> AbstractLRScheduler:
-    assert (
-        schedule
-        in [
-            "noop",
-            "myle",
-            "cosine",
-            "wsd",
-            "polynomial",
-        ]
-    ), f"Cannot recognize the learing rate schedule {schedule}, only noop, myle, cosine and wsd are supported"
+    assert schedule in [
+        "noop",
+        "myle",
+        "cosine",
+        "wsd",
+        "polynomial",
+    ], (
+        f"Cannot recognize the learing rate schedule {schedule}, only noop, myle, cosine and wsd are supported"
+    )
 
     assert lr > 0, "The learning reate should be strictly positive"
 
@@ -66,14 +65,14 @@ def build_lr_scheduler(
         )
 
     elif schedule == "wsd":
-        assert (
-            lr > start_lr
-        ), f"the starting learning rate {start_lr} should be lesser than the main lr {lr}"
+        assert lr > start_lr, (
+            f"the starting learning rate {start_lr} should be lesser than the main lr {lr}"
+        )
         start_lr_scale = start_lr / lr
 
-        assert (
-            lr > final_lr
-        ), f"the final learning rate {final_lr} should be lesser than the main lr {lr}"
+        assert lr > final_lr, (
+            f"the final learning rate {final_lr} should be lesser than the main lr {lr}"
+        )
         final_lr_scale = final_lr / lr
 
         lr_scheduler = TriStageLR(

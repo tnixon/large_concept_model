@@ -114,12 +114,12 @@ class EvalRunModule(StopesModule):
         )
 
         if iteration_value is not None:
-            assert (
-                isinstance(iteration_value, int) and self.config.nshards
-            ), f"Invalid shard value ({self.config.nshards}) or iteration value ({iteration_value})"
-            assert (
-                self.config.data_loading
-            ), f"Data loading is not specified: \n {self.config}"
+            assert isinstance(iteration_value, int) and self.config.nshards, (
+                f"Invalid shard value ({self.config.nshards}) or iteration value ({iteration_value})"
+            )
+            assert self.config.data_loading, (
+                f"Data loading is not specified: \n {self.config}"
+            )
             self.config.data_loading.rank = iteration_value
             self.config.data_loading.world_size = int(self.config.nshards)
 
@@ -194,9 +194,9 @@ async def schedule_task(
         result = (metrics, result_file)
 
     result_metrics, result_file = result
-    assert isinstance(
-        result_metrics, dict
-    ), f"Expected Tuple[Dict[str, AverageMetrics], str], get {type(result_metrics)}"
+    assert isinstance(result_metrics, dict), (
+        f"Expected Tuple[Dict[str, AverageMetrics], str], get {type(result_metrics)}"
+    )
 
     metrics = {}
     cf = getattr(module.config, "confidence_level", None)

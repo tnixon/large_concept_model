@@ -62,9 +62,9 @@ class LCMScorer(LCMGenerator):
             )
         else:
             self.text_seq_lens = text_padding_mask.seq_lens
-            assert (
-                self.text_seq_lens is not None
-            ), "Expecting a valid `self.text_seq_lens` Tensor, found `None`"
+            assert self.text_seq_lens is not None, (
+                "Expecting a valid `self.text_seq_lens` Tensor, found `None`"
+            )
 
             # Keep the materialized mask
             self.text_padding_mask = text_padding_mask.materialize()
@@ -77,17 +77,17 @@ class LCMScorer(LCMGenerator):
 
         # Make sure we do not accidentally set a max_gen_len that exceeds
         # the generator's model capability
-        assert (
-            max_gen_len <= self.max_seq_len
-        ), f"Generator can generate up to {self.max_seq_len} sequences, max_gen_len={max_gen_len}"
+        assert max_gen_len <= self.max_seq_len, (
+            f"Generator can generate up to {self.max_seq_len} sequences, max_gen_len={max_gen_len}"
+        )
         self.max_gen_len = max_gen_len
 
         if not min_gen_len:
             min_gen_len = self.min_seq_len
 
-        assert (
-            min_gen_len > 0
-        ), f"min_gen_len must be greater than or equal to 1, min_gen_len={min_gen_len}"
+        assert min_gen_len > 0, (
+            f"min_gen_len must be greater than or equal to 1, min_gen_len={min_gen_len}"
+        )
         self.min_gen_len = min_gen_len
 
         if temperature == 0.0:

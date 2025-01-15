@@ -1060,9 +1060,9 @@ class Trainer(StatefulObjectBag):
 
 class TrainerBuilder:
     def __init__(self, config: TrainingConfig):
-        assert (
-            config.save_model_every_n_steps % config.checkpoint_every_n_steps == 0
-        ), f"save_model_every_n_steps={config.save_model_every_n_steps} for saving consolidated models should be a multiplier of checkpoint_every_n_steps={config.checkpoint_every_n_steps}"
+        assert config.save_model_every_n_steps % config.checkpoint_every_n_steps == 0, (
+            f"save_model_every_n_steps={config.save_model_every_n_steps} for saving consolidated models should be a multiplier of checkpoint_every_n_steps={config.checkpoint_every_n_steps}"
+        )
 
         self.config = config
 
@@ -1132,9 +1132,9 @@ class TrainerBuilder:
         here inferred from the use of `model_config_or_name`
         """
         if self.config.model_config_or_name is not None:
-            assert (
-                self.config.model_arch is None
-            ), "We cannot set both `model_config_or_name` and `model_arch`"
+            assert self.config.model_arch is None, (
+                "We cannot set both `model_config_or_name` and `model_arch`"
+            )
 
             if isinstance(self.config.model_config_or_name, str):
                 # The config of a registered model i.e. we're finetuning
@@ -1180,7 +1180,9 @@ class TrainerBuilder:
         elif self.config.model_arch is not None:
             assert (
                 self.config.model_arch in self.model_config_loader._arch_configs.names()
-            ), f"Could not recognise {self.config.model_arch} as a registered architecture "
+            ), (
+                f"Could not recognise {self.config.model_arch} as a registered architecture "
+            )
 
             logger.info(
                 f"Creating a model from registered arch {self.config.model_arch}"
@@ -1392,8 +1394,10 @@ class TrainerBuilder:
 
     def _setup_additional_logging(self):
         if self.config.debug:
-            assert self.config.log_folder is not None, "Missing log_folder, \
+            assert self.config.log_folder is not None, (
+                "Missing log_folder, \
             make sure the log_folder is properly set in the training config"
+            )
             setup_additional_logging(log_folder=self.config.log_folder)
 
     @property

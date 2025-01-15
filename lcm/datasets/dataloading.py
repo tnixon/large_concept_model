@@ -202,9 +202,9 @@ class SingleParquetDatasetDataloader:
         self, rank: int = 0, world_size: int = 1
     ) -> DataPipelineBuilder:
         if world_size > 1:
-            assert (
-                self.loading_config.seed is not None
-            ), "for distributed training with `world_size` > 1,  `seed` should be set !"
+            assert self.loading_config.seed is not None, (
+                "for distributed training with `world_size` > 1,  `seed` should be set !"
+            )
         if self.is_validation:
             self.set_validation_params(world_size)
 
@@ -321,12 +321,12 @@ class SingleParquetDatasetDataloader:
         self, pipeline: DataPipelineBuilder
     ) -> DataPipelineBuilder:
         if self.dataset_config.source_sequences is not None:
-            assert (
-                self.dataset_config.source_column is not None
-            ), f"Expected a source_column - found {self.dataset_config.source_column}"
-            assert (
-                self.dataset_config.source_text_column is not None
-            ), f"Expected a source_text_column - found {self.dataset_config.source_text_column}"
+            assert self.dataset_config.source_column is not None, (
+                f"Expected a source_column - found {self.dataset_config.source_column}"
+            )
+            assert self.dataset_config.source_text_column is not None, (
+                f"Expected a source_text_column - found {self.dataset_config.source_text_column}"
+            )
 
             pipeline = pipeline.map(
                 partial(
@@ -338,12 +338,12 @@ class SingleParquetDatasetDataloader:
                 num_parallel_calls=self._num_parallel_call(self.nb_parallel_fragments),
             )
         if self.dataset_config.target_sequences is not None:
-            assert (
-                self.dataset_config.target_column is not None
-            ), f"Expected a target_column, found {self.dataset_config.target_column}"
-            assert (
-                self.dataset_config.target_text_column is not None
-            ), f"Expected a target_text_columns, found {self.dataset_config.target_text_column}"
+            assert self.dataset_config.target_column is not None, (
+                f"Expected a target_column, found {self.dataset_config.target_column}"
+            )
+            assert self.dataset_config.target_text_column is not None, (
+                f"Expected a target_text_columns, found {self.dataset_config.target_text_column}"
+            )
 
             pipeline = pipeline.map(
                 partial(
@@ -426,9 +426,9 @@ class SingleParquetDatasetDataloader:
                 )
 
         if self.loading_config.even_sharding:
-            assert (
-                self.loading_config.seed is not None
-            ), "`even_sharding` sharding requires to seed to be set"
+            assert self.loading_config.seed is not None, (
+                "`even_sharding` sharding requires to seed to be set"
+            )
 
         if self.loading_config.max_tokens == 0:
             self.loading_config.max_tokens = None
@@ -876,9 +876,9 @@ class SingleParquetDatasetDataloader:
             self.loading_config.max_sentence_len_in_doc
             or self.loading_config.min_sentence_len_in_doc
         ):
-            assert (
-                self.dataset_config.source_text_column is not None
-            ), f"Expexted a source_text_columns, found {self.dataset_config.source_text_column}"
+            assert self.dataset_config.source_text_column is not None, (
+                f"Expexted a source_text_columns, found {self.dataset_config.source_text_column}"
+            )
 
             pipeline = pipeline.map(
                 partial(
@@ -962,9 +962,9 @@ class SingleParquetDatasetDataloader:
         if source_quality_range is None:
             return pipeline
 
-        assert (
-            self.dataset_config.source_quality_column is not None
-        ), f"Expected a source_quality_columns, found {self.dataset_config.source_quality_column}"
+        assert self.dataset_config.source_quality_column is not None, (
+            f"Expected a source_quality_columns, found {self.dataset_config.source_quality_column}"
+        )
 
         pipeline = pipeline.map(
             partial(

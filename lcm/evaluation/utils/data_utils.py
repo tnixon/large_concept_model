@@ -625,9 +625,9 @@ def default_lcm_postprocess(
 ) -> Example:
     # Get the best hypothesis
     prediction_text = x[PREDICTION_TEXT_COLUMN][0]
-    assert isinstance(
-        prediction_text, list
-    ), f"LCM prediction texts are list of sentences, got {type(prediction_text)}"
+    assert isinstance(prediction_text, list), (
+        f"LCM prediction texts are list of sentences, got {type(prediction_text)}"
+    )
 
     preds = prediction_text
 

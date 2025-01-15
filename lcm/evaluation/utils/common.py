@@ -213,8 +213,7 @@ def string_format(template: str, skip_validation: bool = True, **kwargs: Any) ->
         variables = [k[1] for k in string.Formatter().parse(template) if k[1]]
         if not all(k in kwargs for k in variables):
             raise ValueError(
-                f"Expected: {variables}, got: {sorted(kwargs)}.\n"
-                f"Template:\n{template}"
+                f"Expected: {variables}, got: {sorted(kwargs)}.\nTemplate:\n{template}"
             )
         #  `Dict[Optional[str], typing.Any]`.
         kwargs = {k: kwargs[k] for k in variables}
@@ -580,9 +579,9 @@ def flatten_dict(data: Dict[str, Any], prefix: str = "") -> Dict[str, Any]:
         if isinstance(value, dict):
             flat_dict.update(flatten_dict(value, f"{prefix}{key}/"))
         elif isinstance(value, Tensor):
-            assert (
-                len(value.size()) == 0
-            ), f"Only scalar tensor can be formatted, get {value}"
+            assert len(value.size()) == 0, (
+                f"Only scalar tensor can be formatted, get {value}"
+            )
             flat_dict[f"{prefix}{key}"] = value.item()
         elif isinstance(value, AverageMetric):
             flat_dict[f"{prefix}{key}"] = value.value

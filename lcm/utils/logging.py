@@ -31,9 +31,9 @@ def log_git_status(
     repo: str = "lcm",
     tolerate_uncommitted: bool = False,
 ) -> str:
-    assert (
-        repo in LCM_REPOS
-    ), f"Only the LCM core repos ({LCM_REPOS}) are supported in `log_git_status`"
+    assert repo in LCM_REPOS, (
+        f"Only the LCM core repos ({LCM_REPOS}) are supported in `log_git_status`"
+    )
 
     repo_path = os.path.dirname(globals()[repo].__file__)
 

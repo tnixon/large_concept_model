@@ -57,9 +57,9 @@ def get_scorer(
     if "outputs" in defaults:
         output_columns = defaults["outputs"].default
     else:
-        assert (
-            config.model_name
-        ), f"Cannot resolve output name for the scorer type {scorer_cls}"
+        assert config.model_name, (
+            f"Cannot resolve output name for the scorer type {scorer_cls}"
+        )
         output_columns = scorer_cls.default_outputs(config.model_name)
 
     if isinstance(output_columns, str):

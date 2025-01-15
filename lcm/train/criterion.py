@@ -91,9 +91,9 @@ class CriterionsFactory:
         """decorator for adding criterions to the registry"""
 
         def inner_wrapper(wrapped_class: Criterion) -> Callable:
-            assert (
-                name not in cls.registry
-            ), f"{name} is already register as a criterion"
+            assert name not in cls.registry, (
+                f"{name} is already register as a criterion"
+            )
             cls.registry[name] = wrapped_class
             return wrapped_class
 

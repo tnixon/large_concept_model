@@ -160,9 +160,9 @@ class LCMDenoiserTransformerFactory(TransformerFactory):
     def build_layer(self) -> LCMDenoiserLayer:
         """Build a Transformer decoder layer based on the provided config."""
 
-        assert isinstance(
-            self.config, DenoiserConfig
-        ), "Expecting a DenoiserConfig in the DenoiserTransformerFactory"
+        assert isinstance(self.config, DenoiserConfig), (
+            "Expecting a DenoiserConfig in the DenoiserTransformerFactory"
+        )
 
         self_attn = self.build_attention()
 

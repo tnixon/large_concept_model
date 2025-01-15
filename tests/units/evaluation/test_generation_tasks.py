@@ -209,6 +209,6 @@ def test_run_task_with_dynamic_predictor(simple_data_config):
         data_loading_config=eval_dlc,
         dataset_config=dsc,
     )
-    assert (
-        "m1" in avg_result.metrics and avg_result.metrics["m1"].avg == 0.0
-    ), avg_result.metrics  # type: ignore
+    assert "m1" in avg_result.metrics and avg_result.metrics["m1"].avg == 0.0, (
+        avg_result.metrics
+    )  # type: ignore

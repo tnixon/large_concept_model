@@ -190,9 +190,9 @@ def run_task(
     task_config = TaskRegistry.get_config(run_config.task_name, **run_config.params)
 
     data_loader_type = TaskRegistry.get_dataloader_type(run_config.task_name)
-    assert isinstance(
-        run_config.data_loading, EvaluationDataLoadingConfig
-    ), "data loading not specified"
+    assert isinstance(run_config.data_loading, EvaluationDataLoadingConfig), (
+        "data loading not specified"
+    )
     task = build_task(
         task_config,
         data_loading_config=run_config.data_loading,

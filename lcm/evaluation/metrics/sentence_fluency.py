@@ -200,9 +200,9 @@ class PerplexityScorer(Scorer):
             bos_token = bos_token or getattr(self.tokenizer, "bos_token", "\n")
         if eos_token != "":
             eos_token = eos_token or getattr(self.tokenizer, "eos_token", "\n")
-        assert (
-            eos_token is not None and bos_token is not None
-        ), "Expecting eos and bos tokens, for perplexity without any surrounding tokens, use eos_token='' and bos_token=''"
+        assert eos_token is not None and bos_token is not None, (
+            "Expecting eos and bos tokens, for perplexity without any surrounding tokens, use eos_token='' and bos_token=''"
+        )
         logger.info(
             f"Computing perplexity with bos_token={repr(bos_token)} and eos_token={repr(eos_token)}"
         )
@@ -340,9 +340,9 @@ class RoundTripTranslationScorer(Scorer):
         translations = []
         back_translations = []
         losses = []
-        assert isinstance(
-            self.model, EncoderDecoderModel
-        ), f"Unsupported type: {type(self.model)}"
+        assert isinstance(self.model, EncoderDecoderModel), (
+            f"Unsupported type: {type(self.model)}"
+        )
         generator = BeamSearchSeq2SeqGenerator(
             self.model, echo_prompt=True, max_seq_len=self.max_seq_len
         )

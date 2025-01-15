@@ -52,9 +52,9 @@ def test_train_recipes(monkeypatch, conf_name, tmp_path, group="train"):
                 "++trainer.use_fsdp=false",
             ],
         )
-        assert isinstance(
-            config, DictConfig
-        ), f"+{group}={conf_name} expect dict-type config, get {type(config)}."
+        assert isinstance(config, DictConfig), (
+            f"+{group}={conf_name} expect dict-type config, get {type(config)}."
+        )
 
         try:
             trainer = get_trainer(config.trainer)
@@ -79,9 +79,9 @@ def test_train_recipes(monkeypatch, conf_name, tmp_path, group="train"):
             else:
                 raise
 
-        assert isinstance(
-            trainer, Trainer
-        ), f"+{group}={conf_name} Error parsing recipe."
+        assert isinstance(trainer, Trainer), (
+            f"+{group}={conf_name} Error parsing recipe."
+        )
 
 
 def find_eval_recipes():

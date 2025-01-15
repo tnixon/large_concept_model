@@ -103,13 +103,13 @@ def load_few_shots(
     few_shot_examples = config.few_shot_examples
     if config.num_few_shot > 0:
         if few_shot_examples is None:
-            assert (
-                config.few_shot_file
-            ), f"Expect non-empty few_shot_file when few_shot = {config.num_few_shot}"
+            assert config.few_shot_file, (
+                f"Expect non-empty few_shot_file when few_shot = {config.num_few_shot}"
+            )
             assert data_loader, "Expect non-empty data loader"
-            assert isinstance(
-                data_loader.data_config, EvaluationDataLoadingConfig
-            ), f"unexpected data loading type: {type(data_loader.data_config)}"
+            assert isinstance(data_loader.data_config, EvaluationDataLoadingConfig), (
+                f"unexpected data loading type: {type(data_loader.data_config)}"
+            )
             few_shot_data_loader = JSONTestDataLoader(
                 data_config=data_loader.data_config,
                 dataset=JSONDatasetConfig(file_path=config.few_shot_file),
@@ -487,9 +487,9 @@ class ChoiceTask(Task):
                 x["nlls"] = defaultdict(list)
                 for cix, (text, pred) in enumerate(zip(x["choice_texts"], preds)):
                     assert pred.tokens and pred.logprobs and pred.text_offsets, pred
-                    assert isinstance(
-                        pred.text, str
-                    ), "multiple texts output is not supported in LLM predictor"
+                    assert isinstance(pred.text, str), (
+                        "multiple texts output is not supported in LLM predictor"
+                    )
                     logprobs = pred.logprobs[
                         text_index(pred.text, pred.text_offsets, text)
                     ]
@@ -501,9 +501,9 @@ class ChoiceTask(Task):
                         assert len(preds) == 2 * len(x["choice_texts"])
                         compl = preds[cix + len(x["choice_texts"])]
                         assert compl.tokens and compl.logprobs and compl.text_offsets
-                        assert isinstance(
-                            compl.text, str
-                        ), "multiple texts output is not supported in LLM predictor"
+                        assert isinstance(compl.text, str), (
+                            "multiple texts output is not supported in LLM predictor"
+                        )
                         slice = text_index(compl.text, compl.text_offsets, text)
                         nll_compl = -sum(logprobs) + sum(compl.logprobs[slice])
                         x["nlls"]["completion"].append(nll_compl)

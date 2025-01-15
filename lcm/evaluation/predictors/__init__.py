@@ -42,9 +42,9 @@ def build_predictor(
     if isinstance(predictor_config, PredictorConfig):
         config_cls = predictor_config.__class__
     else:
-        assert (
-            predictor_type is not None
-        ), f"Cannot infer predictor from config type {type(predictor_config)}"
+        assert predictor_type is not None, (
+            f"Cannot infer predictor from config type {type(predictor_config)}"
+        )
         config_cls = get_config_cls(predictor_type)
         predictor_config = promote_config(predictor_config, config_cls)
 

@@ -243,9 +243,9 @@ class TwoTowerDiffusionLCModel(AbstractLCModel):
 
     def sample_initial_noise_vectors(self, batch_size: int):
         # Check that we called `prep_for_denoising`:
-        assert hasattr(
-            self, "clip_noise"
-        ), "The model is not properly set for decoding, make sure to call `model.prep_for_denoising()`"
+        assert hasattr(self, "clip_noise"), (
+            "The model is not properly set for decoding, make sure to call `model.prep_for_denoising()`"
+        )
 
         # Sample a noise vector for next embedding prediction
         latents = torch.randn(
@@ -269,9 +269,9 @@ class TwoTowerDiffusionLCModel(AbstractLCModel):
         context_state_bag: Optional[LCMIncrementalStateBag] = None,
         **kwargs,
     ) -> Tuple[EmbeddingsBatch, EmbeddingsBatch]:
-        assert (
-            context_state_bag is not None
-        ), "Expected a state_bag to incrementally encode the context"
+        assert context_state_bag is not None, (
+            "Expected a state_bag to incrementally encode the context"
+        )
 
         if self.do_classifier_free_guidance:
             logger.debug("Running inference with CF-guidance...")
@@ -347,9 +347,9 @@ class TwoTowerDiffusionLCModel(AbstractLCModel):
         context_state_bag: Optional[LCMIncrementalStateBag] = None,
         **kwargs,
     ) -> Tuple[EmbeddingsBatch, EmbeddingsBatch]:
-        assert (
-            context_state_bag is not None
-        ), "Expected a state_bag to incrementally encode the context"
+        assert context_state_bag is not None, (
+            "Expected a state_bag to incrementally encode the context"
+        )
 
         # Normalize the input embeddings if we're expected to
         # normalize outside of the model's forward pass
@@ -533,9 +533,9 @@ class TwoTowerDiffusionLCModelBuilder(AbstractLCModelBuilder):
         """Build a model."""
 
         sonar_normalizer = self.build_sonar_normalizer()
-        assert (
-            sonar_normalizer is not None
-        ), "TwoTowerDiffusionLCModel expects a `sonar_normalizer`"
+        assert sonar_normalizer is not None, (
+            "TwoTowerDiffusionLCModel expects a `sonar_normalizer`"
+        )
 
         # the context encoder
         encoder_frontend = self.build_frontend()

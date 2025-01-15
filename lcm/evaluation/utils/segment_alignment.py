@@ -262,9 +262,9 @@ def align_outputs_with_paragraphs(
     output_columns = [
         c for c in output_df.columns if c.startswith(output_column_prefix)
     ]
-    assert (
-        len(output_columns) > 0
-    ), f"No output columns starting with the output_column_prefix='{output_column_prefix}' found."
+    assert len(output_columns) > 0, (
+        f"No output columns starting with the output_column_prefix='{output_column_prefix}' found."
+    )
 
     # 1.2. Read the human alignments
     paragraphs_ids = []
@@ -283,13 +283,13 @@ def align_outputs_with_paragraphs(
     ]
 
     # 1.3. The order of the documents might be different. Align it!
-    assert (
-        len(machine_inputs) == len(paragraphs_texts)
-    ), f"Machine outputs contain {len(machine_inputs)} documents, but human paragraphs contain {len(paragraphs_texts)} documents."
+    assert len(machine_inputs) == len(paragraphs_texts), (
+        f"Machine outputs contain {len(machine_inputs)} documents, but human paragraphs contain {len(paragraphs_texts)} documents."
+    )
     machine_ids = match_text_pairs(paragraphs_texts, machine_inputs)
-    assert len(machine_ids) == len(
-        set(machine_ids)
-    ), "Machine and human outputs don't seem to be 1:1 alignable."
+    assert len(machine_ids) == len(set(machine_ids)), (
+        "Machine and human outputs don't seem to be 1:1 alignable."
+    )
 
     named_machine_outputs: Dict[str, List[str]] = {
         column: output_df[column].loc[machine_ids].tolist() for column in output_columns

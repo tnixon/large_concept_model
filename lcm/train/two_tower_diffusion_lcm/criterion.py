@@ -52,9 +52,9 @@ class TwoTowerDiffusionCriterion(LCMCriterion):
         style: LCMStyle = LCMStyle.UNSUPERVISED,
     ):
         super().__init__(config, model, style)
-        assert hasattr(
-            self.base_model, "noise_scheduler"
-        ), "Expecting the diffusion model to have a `noise_scheduler`"
+        assert hasattr(self.base_model, "noise_scheduler"), (
+            "Expecting the diffusion model to have a `noise_scheduler`"
+        )
         self.noise_scheduler = self.base_model.noise_scheduler
 
         self.prediction_type = self.noise_scheduler.prediction_type
@@ -71,9 +71,9 @@ class TwoTowerDiffusionCriterion(LCMCriterion):
             f"trained_with_cf_guidance={self.trained_with_cf_guidance}",
         )
 
-        assert (
-            self.normalize_in_criterion
-        ), "We only support `normalize_in_criterion = True` in the diffusion criterions"
+        assert self.normalize_in_criterion, (
+            "We only support `normalize_in_criterion = True` in the diffusion criterions"
+        )
 
         self.summands.append("unnormalized_reconstruction_loss")
 
@@ -378,9 +378,9 @@ class DiffusionNextSentFinetuningCriterion(TwoTowerDiffusionCriterion):
         # Prepare the input as in MSE LCM
         input_embeddings = batch.prepare_input(style=self.style)
 
-        assert (
-            input_embeddings.source_lengths is not None
-        ), "Missing source lengths needed for the two-tower supervised fintuning"
+        assert input_embeddings.source_lengths is not None, (
+            "Missing source lengths needed for the two-tower supervised fintuning"
+        )
 
         target_embeddings = EmbeddingsBatch(*pad_seqs(batch.target))  # type: ignore
 

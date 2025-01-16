@@ -21,7 +21,7 @@ Next, we download and parse the content (source text and summaries), saving diff
 ```shell
 python prepare_evaluation_data.py prepare_data \
     --dataset_name=cnn_dailymail \
-    --output_dir=jsonl_dataset/cnn_dailymail \
+    --output_dir=jsonl_dataset \
     --source_text_column=article \
     --target_text_column=highlights \
     --version=3.0.0 \
@@ -30,6 +30,8 @@ python prepare_evaluation_data.py prepare_data \
 ```
 
 Explain: In the above script, `cnn_dailymail` and `3.0.0` is the name and configuration of the dataset as available in HuggingFace `datasets`, `article` and `highlights` are source and summary columns. The `prompt_prefix` and `prompt_suffix` are optional arguments, if specified they will be prepended and appended to each source text to form the complete prompt. These arguments are useful if you want to embed the prompts into the dataset, and let them process all at once together with the text. Alternatively, we can specify them at later phase, when we evaluate the model (in which case the model will process the prompts on the fly)
+
+> **_NOTE:_**  When `prompt_prefix` or `prompt_suffix` are specified, the dataset schema will change, i.e. the columns are renamed to "prompt" for input and "answer" for output. This is to indicate that we are handling the "processed" dataset and not the original one.
 
 The output will be stored in different files `[split].jsonl` under the directory `output_dir`. 
 
@@ -41,6 +43,8 @@ To perform sentence splitting and sonar embedding for each split, run the follow
 ```shell
 python prepare_evaluation_data.py embed \
     --input_path=jsonl_dataset/cnn_dailymail/test.jsonl \
+    --input_column=article \
+    --output_column=highlights \
     --output_dir=parquet_dataset/cnn_dailymail \
     --lang=eng_Latn \
     --mode=slurm \
@@ -92,12 +96,16 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
   --task_args '{"max_gen_len": 200}' \
   --dataset_dir jsonl_dataset/cnn_dailymail \
   --data_loading.batch_size 16 \
+  --dataset.soure_text_column prompt \
+  --dataset.source_target_column answer \
   --dump_dir output_results
 ```
 
 In the example above, we load the model "meta-llama/Llama-3.1-8B-Instruct" as [specified](https://huggingface.co/meta-llama/Llama-3.1-8B-Instruct) in HuggingFace, evaluate it on the CNN dailymail in which we process using the `prepare_evaluation_data.py` script as in Step 1.1, and store the results in the folder specified via `dump_dir`. The argument `dataset_dir` refers to the value of the argument `output_dir` in Step 1.1.
 
-You can also customize the prompt used to evaluate the LLM for each evaluation run. To do this, instead of specifying the `prompt_prefix` and `prompt_suffix` when preparing the data (as shown in the example in Section 1.1), we specify `dataset.source_prefix_text` and `dataset.source_suffix_text` during the evaluation run:
+In some cases, the model requires authentication token to evaluate. You can obtain them in HuggingGface (see [User Access Tokens](https://huggingface.co/docs/hub/en/security-tokens)), then add the parameter `--use_auth_token [YOUR TOKEN]` to the CLI command.
+
+In the above example, we need to provide the `source_text_column` and `source_target_column` parameters, because in Step 1, we inject the prompts direcly to the dataset and renamed the columns accordingly (to differentiate with "original" datasets).  You can also skip this part and customize the prompt for each for each evaluation run. To do this, instead of specifying the `prompt_prefix` and `prompt_suffix` when preparing the data (as shown in the example in Section 1.1), we specify `dataset.source_prefix_text` and `dataset.source_suffix_text` during the evaluation run:
 
 ```shell
 uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
@@ -112,6 +120,8 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
   --dataset.source_suffix_text "\n[Text End]" \
   --dump_dir output_results
 ```
+
+Note the missing parameters `source_text_column` and `target_text_column` and the new parameters `source_prefix_text`, `target_prefix_text`, since in this case, we do not modify the column schema, therefore the original text columns ("article", "highlights") are kept and not specified in the CLI.
 
 It is also possible to provide the prompt from a YAML file. This is handy when you have to engineer the prompts carefully and have a very long detailed text. We provide one example prompt in the file [instruction.yaml](./instruction.yaml). The example command is:
 

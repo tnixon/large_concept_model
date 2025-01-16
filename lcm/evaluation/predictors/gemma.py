@@ -6,7 +6,6 @@
 from dataclasses import dataclass
 
 from lcm.evaluation.api import (
-    GROUND_TRUTH_COLUMN,
     PREDICTION_COLUMN,
     Example,
 )
@@ -32,7 +31,7 @@ class GemmaPredictor(HuggingfacePredictor):
     def post_process(self, x: Example) -> Example:
         """Handle the cleaning of response from Gemma models"""
 
-        pred = x[PREDICTION_COLUMN]
+        pred = x.pop(PREDICTION_COLUMN)
 
         # Pretrained model
         if not self.config.model_name.endswith("-it"):
@@ -56,10 +55,7 @@ class GemmaPredictor(HuggingfacePredictor):
                 colon_idx = pred.find(":")
                 pred = pred[colon_idx + 1 :].strip()
 
-        if GROUND_TRUTH_COLUMN in x:
-            return {
-                PREDICTION_COLUMN: pred,
-                GROUND_TRUTH_COLUMN: x[GROUND_TRUTH_COLUMN],
-            }
-        else:
-            return {PREDICTION_COLUMN: pred}
+        return {
+            PREDICTION_COLUMN: pred,
+            **x,
+        }

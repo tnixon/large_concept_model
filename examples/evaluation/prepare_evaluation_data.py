@@ -12,6 +12,7 @@
 
 import json
 import logging
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -48,8 +49,16 @@ INPUT_KEY = "prompt"
 OUTPUT_KEY = "answer"
 
 
+@dataclass
+class SonarColumnRenameAndEmbedConfig(SonarTextEmbedderConfig):
+    input_column: str = INPUT_KEY
+    output_column: Optional[str] = OUTPUT_KEY
+
+
 class InstSonarEmbedder(SonarTextBatchEmbedder):
-    def __init__(self, config: SonarTextEmbedderConfig) -> None:
+    config: SonarColumnRenameAndEmbedConfig
+
+    def __init__(self, config: SonarColumnRenameAndEmbedConfig) -> None:
         super().__init__(config)
         self.sat_splitter = SaT("sat-3l")
         self.sat_splitter.to("cuda")
@@ -120,19 +129,22 @@ class InstSonarEmbedder(SonarTextBatchEmbedder):
     def __call__(self, batch: pa.Table) -> pa.Table:
         batch = batch_to_pandas(batch)
 
-        batch[f"{OUTPUT_KEY}_sentences"] = self.split_one_single_column(
-            batch[OUTPUT_KEY]
+        batch[f"{INPUT_KEY}_sentences"] = self.split_one_single_column(
+            batch[self.config.input_column]
         )
-        # Avoid too much resplitting on the target side
-        batch[f"{OUTPUT_KEY}_sentences"] = self.resplit_long_sentences(
-            batch[f"{OUTPUT_KEY}_sentences"], max_length_char=256
-        )
-
-        batch[f"{INPUT_KEY}_sentences"] = self.split_one_single_column(batch[INPUT_KEY])
         batch[f"{INPUT_KEY}_sentences"] = self.resplit_long_sentences(
             batch[f"{INPUT_KEY}_sentences"],
             max_length_char=256,
         )
+
+        if self.config.output_column is not None:
+            batch[f"{OUTPUT_KEY}_sentences"] = self.split_one_single_column(
+                batch[self.config.output_column]
+            )
+            # Avoid too much resplitting on the target side
+            batch[f"{OUTPUT_KEY}_sentences"] = self.resplit_long_sentences(
+                batch[f"{OUTPUT_KEY}_sentences"], max_length_char=256
+            )
 
         return super().__call__(batch_to_table(batch))
 
@@ -140,16 +152,25 @@ class InstSonarEmbedder(SonarTextBatchEmbedder):
 def prepare_data(
     dataset_name: str,
     output_dir: str,
-    source_text_column: str,
-    target_text_column: Optional[str] = None,
+    source_text_column: str = INPUT_KEY,
+    target_text_column: Optional[str] = OUTPUT_KEY,
     version: Optional[str] = None,
     prompt_prefix: Optional[str] = None,
     prompt_suffix: Optional[str] = None,
 ):
     """Download HuggingFace datasets and parse them into JSON format"""
     ds = datasets.load_dataset(dataset_name, version)
+
     prompt_prefix = prompt_prefix or ""
     prompt_suffix = prompt_suffix or ""
+
+    # If there is no prompt added to the dataset, we keep the original column names
+    if not prompt_prefix and not prompt_suffix:
+        source = source_text_column
+        target = target_text_column
+    else:
+        source = INPUT_KEY
+        target = OUTPUT_KEY
 
     for split in SPLITS:
         with open(
@@ -158,27 +179,31 @@ def prepare_data(
             for item in ds[split]:
                 prompt = prompt_prefix + item[source_text_column] + prompt_suffix
                 output_item = {
-                    INPUT_KEY: prompt,
+                    source: prompt,
                     "split": split,
                     "category": f"{dataset_name}",
                 }
                 if target_text_column is not None:
-                    output_item[OUTPUT_KEY] = item[target_text_column]
+                    output_item[target] = item[target_text_column]
                 o.write(json.dumps(output_item) + "\n")
 
 
 async def embed(
     input_path: str,
     output_dir: str,
+    source_text_column: str = INPUT_KEY,
+    target_text_column: Optional[str] = OUTPUT_KEY,
     lang: str = "eng_Latn",
     mode: Literal["local", "slurm"] = "local",
     log_dir: Optional[str] = None,
 ):
-    inst_sonar_config = SonarTextEmbedderConfig(
+    inst_sonar_config = SonarColumnRenameAndEmbedConfig(
         column_config=[
             LangColumnConfig(f"{OUTPUT_KEY}_sentences", lang_value=lang),
             LangColumnConfig(f"{INPUT_KEY}_sentences", lang_value=lang),
         ],
+        input_column=source_text_column,
+        output_column=target_text_column,
         batch_size=32,
         device="cuda",
     )

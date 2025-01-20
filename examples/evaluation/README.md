@@ -161,6 +161,8 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
   --tasks lcm_generation \
   --task_args '{"max_gen_len": 200}' \
   --dataset.parquet_path parquet_dataset/cnn_dailymail \
+  --dataset.source_column prompt_sentences_sonar_emb \
+  --dataset.target_column answer_sentences_sonar_emb \
   --data_loading.batch_size 16 \
   --dump_dir output_results
 ```
@@ -178,13 +180,12 @@ Similar to LLM evaluation, it is possible to specify the prompt prefix and suffi
 | `data_loading.batch_size`   | Loading and evaluate data in batch. By default `batch_size=10`   |
 | `dataset_dir` | The directory consists of different JSONL files processed in Step 1. Only used in LLM evaluation
 | `dataset.parquet_path` | The parquet path  consists of different Parquet files files processed in Step 1. Only used in LCM evaluation
-| `dataset.source_column` | The column in the data that refers to the input embedding. Not applicable when evaluating LLMs
-| `dataset.source_text_column` | The column in the data that refers to the input text. Not applicable  when evaluating LCMs
-| `dataset.source_text_column` | The column in the data that refers to the input text. Not applicable  when evaluating LCMs
-| `dataset.target_column` | The column in the data that refers to the ground-truth embedding. Not applicable  when evaluating LLMs
-| `dataset.target_text_column` | The column in the data that refers to the ground-truth text. Not applicable  when evaluating LCMs
+| `dataset.source_column` | The column in the data that refers to the input embedding. Not applicable when evaluating LLMs.
+| `dataset.source_text_column` | The column in the data that refers to the input text.
+| `dataset.target_column` | The column in the data that refers to the ground-truth embedding. Not applicable when evaluating LLMs.
+| `dataset.target_text_column` | The column in the data that refers to the ground-truth text.
 | `dataset.source_text_prefix` | The text that will prepended to each input text to make the prompt for the model.
-| `dataset.source_text_prefix` | The text that will appended after each input text to make the prompt for the model.
+| `dataset.source_text_suffix` | The text that will appended after each input text to make the prompt for the model.
 | `task_args` | The JSON-formatted string that represents the task arguments. See [task param list](#task_param_list) below.
 | `dump_dir` | The directory consisting output of the eval run. If successful, there should be a file `metrics.eval.jsonl` that consists of metric results, the directory `results` that capture the verbose command line used with the detailed output scores, and the directory `raw_results` that shows
 the model output for each individual sample, together with the per-sample metric results.

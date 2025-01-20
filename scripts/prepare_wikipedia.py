@@ -85,11 +85,12 @@ def run(output_dir: Path):
     # launching config, here we use `local` to run locally, but you can switch it to `slurm` if you have a SLURM cluster.
     launcher = Launcher(
         cache=None,
-        cluster="local",
+        # cluster="local",
         # for SLURM you can set some parameters of the launcher here
-        # update_parameters={
-        #    "slurm_partition": "YOURPARTITION",
-        # },
+        cluster="slurm",
+        update_parameters={
+           "partition": "learn",
+        },
     )
 
     # launch the shards processing

@@ -13,6 +13,7 @@
 import json
 import logging
 from dataclasses import dataclass
+import os
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -195,6 +196,7 @@ async def embed(
     target_text_column: Optional[str] = OUTPUT_KEY,
     lang: str = "eng_Latn",
     mode: Literal["local", "slurm"] = "local",
+    shards: int = 1,
     log_dir: Optional[str] = None,
 ):
     inst_sonar_config = SonarColumnRenameAndEmbedConfig(
@@ -212,6 +214,7 @@ async def embed(
         Path(input_path),
         batch_size=10,  # iterating by small number of documents
         batch_format=BatchFormat.ARROW,
+        num_shards=shards,
     )
 
     output_config = ParquetOutputConfig(output_dir)
@@ -224,13 +227,15 @@ async def embed(
     )(InstSonarEmbedder)
 
     inst_stopes_module = wrapped_cls(input_config, output_config, inst_sonar_config)
+    
+    # qos = os.getenv("LCM_QOS", "learn")
 
     launcher = Launcher(
         cache=None,
         config_dump_dir=Path(log_dir) / "conf",
         log_folder=Path(log_dir) / "logs",
         cluster=mode,
-        update_parameters={"slurm_qos": "lcm_pretrain"},
+        update_parameters={"partition": "learn"},
     )
     _ = await launcher.schedule(inst_stopes_module)
 

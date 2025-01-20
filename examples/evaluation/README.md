@@ -7,11 +7,7 @@ After you have trained an LCM, the checkpoint will be saved in a folder under th
 Since an LCM expects input data in sentence level, we need to preprocess the evaluation datasets accordingly. This includes parsing the raw content and
 splitting  texts into sentences, then embedding them into vectors using a Sonar encoder.
 
-The example below shows how we prepare the data for CNN Dailymail. We load the dataset from Huggingface using [`datasets` API](https://huggingface.co/docs/datasets/en/index). The sentence splitting is done using [wtpsplit](https://github.com/segment-any-text/wtpsplit). First, we install necessary libraries:
-
-```shell
-python -m pip install datasets wtpsplit
-```
+The example below shows how we prepare the data for CNN Dailymail. We load the dataset from Huggingface using [`datasets` API](https://huggingface.co/docs/datasets/en/index). The sentence splitting is done using [wtpsplit](https://github.com/segment-any-text/wtpsplit). Make sure to specify `--extra data` in installing the project to include these libraries.
 
 All processing logic is implemented in the file `prepare_evaluation_data.py`, as described below.
 
@@ -19,7 +15,7 @@ All processing logic is implemented in the file `prepare_evaluation_data.py`, as
 Next, we download and parse the content (source text and summaries), saving different splits into JSON format
 
 ```shell
-python prepare_evaluation_data.py prepare_data \
+uv run --extra data prepare_evaluation_data.py prepare_data \
     --dataset_name=cnn_dailymail \
     --output_dir=jsonl_dataset \
     --source_text_column=article \
@@ -41,15 +37,29 @@ The output will be stored in different files `[split].jsonl` under the directory
 To perform sentence splitting and sonar embedding for each split, run the following command:
 
 ```shell
-python prepare_evaluation_data.py embed \
+uv run --extra data prepare_evaluation_data.py embed \
     --input_path=jsonl_dataset/cnn_dailymail/test.jsonl \
-    --input_column=article \
-    --output_column=highlights \
+    --source_text_column=prompt \
+    --target_text_column=answer \
     --output_dir=parquet_dataset/cnn_dailymail \
     --lang=eng_Latn \
-    --mode=slurm \
+    --mode=local \
     --log_dir=/tmp/logs/embed_cnndm
 ```
+
+Depending on your machine, this might take some time. Alternatively, you can try to run in your SLURM cluster with the argmnent `--mode=slurm --shards=NO_OF_PARALLEL_JOBS`. This requires changing your SLURM config accordingly. We use [submitit](https://github.com/facebookincubator/submitit) to configure the job launcher. Here is the relevant excerpt in the script:
+
+```python
+launcher = Launcher(
+      cache=None,
+      config_dump_dir=Path(log_dir) / "conf",
+      log_folder=Path(log_dir) / "logs",
+      cluster=mode,
+      update_parameters={"partition": "your_slurm_partition"},
+  )
+  _ = await launcher.schedule(inst_stopes_module)
+```
+
 
 
 ## Step 2: Choose the predictor for evaluation
@@ -121,7 +131,7 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
   --dump_dir output_results
 ```
 
-Note the missing parameters `source_text_column` and `target_text_column` and the new parameters `source_prefix_text`, `target_prefix_text`, since in this case, we do not modify the column schema, therefore the original text columns ("article", "highlights") are kept and not specified in the CLI.
+> **_NOTE:_** the missing parameters `source_text_column` and `target_text_column` and the new parameters `source_prefix_text`, `target_prefix_text` are becase we do not modify the column schema. Therefore, the original text columns ("article", "highlights") are kept and not specified in the CLI.
 
 It is also possible to provide the prompt from a YAML file. This is handy when you have to engineer the prompts carefully and have a very long detailed text. We provide one example prompt in the file [instruction.yaml](./instruction.yaml). The example command is:
 
@@ -223,7 +233,7 @@ shards=NUMBER_OF_SLURM_NODES
 timeout_min=JOB_TIMEOUT_IN_MINUTES
 
 
-python -m lcm.evaluation \
+uv run -m lcm.evaluation \
   --predictor two_tower_diffusion_lcm  \
   --model_card path/to/the/model_card.yaml \
   --generator_batch_size 16 \

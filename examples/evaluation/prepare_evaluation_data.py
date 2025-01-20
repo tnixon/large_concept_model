@@ -13,7 +13,6 @@
 import json
 import logging
 from dataclasses import dataclass
-import os
 from pathlib import Path
 from typing import Literal, Optional
 
@@ -227,8 +226,6 @@ async def embed(
     )(InstSonarEmbedder)
 
     inst_stopes_module = wrapped_cls(input_config, output_config, inst_sonar_config)
-    
-    # qos = os.getenv("LCM_QOS", "learn")
 
     launcher = Launcher(
         cache=None,

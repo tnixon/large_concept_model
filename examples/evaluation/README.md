@@ -161,8 +161,8 @@ uv run torchrun --standalone --nnodes=1 --nproc-per-node=1 -m lcm.evaluation \
   --tasks lcm_generation \
   --task_args '{"max_gen_len": 200}' \
   --dataset.parquet_path parquet_dataset/cnn_dailymail \
-  --dataset.source_column prompt_sentences_sonar_emb \
-  --dataset.target_column answer_sentences_sonar_emb \
+  --dataset.source_text_column prompt_sentences \
+  --dataset.target_text_column answer_sentences \
   --data_loading.batch_size 16 \
   --dump_dir output_results
 ```

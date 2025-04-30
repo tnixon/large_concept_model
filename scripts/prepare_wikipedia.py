@@ -50,7 +50,7 @@ def run(output_dir: Path):
         column_config=[  # we can process several columns at once which is useful for finetuning datasets
             LangColumnConfig("text_sentences", lang_value="eng_Latn")
         ],  # splitter has output a new column `text_sentences` and this is what we will embed
-        device="cuda",  # we want to work on a GPU, if you want to try this on a cpu, change the device here
+        device="mps",  # we want to work on a GPU, if you want to try this on a cpu, change the device here
     )
     # setup the full pipeline, that will use the splitter and the sonar embeddings,
     full_config = FullPipelineConfig(

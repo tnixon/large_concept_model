@@ -43,8 +43,8 @@ name = "lcm" # TODO change module name
 
 [project.optional-dependencies]
 cpu = [
-  "torch==2.5.1+cpu",
-  "torchaudio==2.5.1+cpu",
+  "torch==2.5.1",
+  "torchaudio==2.5.1",
   "fairseq2n==0.3.0rc1",
   "fairseq2[arrow]==0.3.0rc1",
 ]
